@@ -1,5 +1,8 @@
 FROM ubuntu:14.04
 
+
+ENV DEBIAN_FRONTEND noninteractive
+
 # Install Chromium build dependencies.
 RUN echo "deb http://archive.ubuntu.com/ubuntu trusty multiverse" >> /etc/apt/sources.list # && dpkg --add-architecture i386
 RUN apt-get update && apt-get install -qy git build-essential clang curl
@@ -27,10 +30,12 @@ RUN gclient config https://www.github.com/google/edash-packager.git --name=src
 RUN gclient sync
 RUN ninja -d stats -C /home/user/src/out/Release
 
+# clean up
+RUN apt-get remove -y git build-essential clang curl && apt-get autoremove -y && apt-get clean && rm -rf /var/cache/apt/*
+
 # Transparent link
 VOLUME  /home/user/src/out/Release/
 
-CMD --help
 
 WORKDIR /home/user/src/out/Release/
 ENTRYPOINT ./packager
