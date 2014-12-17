@@ -31,6 +31,7 @@ RUN gclient sync
 RUN ninja -d stats -C /home/user/src/out/Release
 
 # clean up
+USER root
 RUN apt-get remove -y git build-essential clang curl && apt-get autoremove -y && apt-get clean && rm -rf /var/cache/apt/*
 
 # Transparent link
